@@ -7,20 +7,22 @@ import Map, {
   type MapRef,
   LngLatLike,
 } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 
 import { getAvailableH2FuelStations } from "@/actions";
 import { createBoundingBox } from "@/utils";
 import { FuelStation } from "@/types";
 
+/**
+ * Renders an interactive map showing all available hydrogen stations.
+ */
 export default function Home() {
-  // store a reference to the Map object to enable mapbox-gl api interactions.
+  // Store a reference to the Map object to enable mapbox-gl api interactions.
   const mapRef = useRef<MapRef>(null);
 
-  // hold fuel station data in state, to iterate over and to create selectable Marker elements for each station.
+  // Hold fuel station data in state, to iterate over and to create selectable Marker elements for each station.
   const [stations, setStations] = useState<FuelStation[]>();
 
-  // fetch the fuel stations to populate the map
+  // Fetch the fuel stations to populate the map
   useEffect(() => {
     const fetchStations = async () => {
       const data = await getAvailableH2FuelStations();
@@ -30,17 +32,17 @@ export default function Home() {
     fetchStations();
   }, []);
 
-  // fit the map bounds around the bounds of the fuel stations
+  // Fit the map bounds around the bounds of the fuel stations
   useEffect(() => {
     if (stations && stations.length > 0) {
-      // create a nested array of coordinates for each fuel station
+      // Create a nested array of coordinates for each fuel station
       const coordinates = stations.map(
         (station) => [station.longitude, station.latitude] as LngLatLike
       );
-      // create a bounding box for the all the stations coordinates
+      // Create a bounding box for the all the stations coordinates
       const stationsBoundingBox = createBoundingBox(coordinates);
 
-      // update the bounds of the map to fit the stations bounding box
+      // Update the bounds of the map to fit the stations bounding box
       mapRef.current?.fitBounds(stationsBoundingBox);
     }
   }, [stations]);

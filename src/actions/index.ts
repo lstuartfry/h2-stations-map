@@ -7,7 +7,7 @@ export interface GetFuelStationsResponseData {
   fuel_stations: FuelStation[];
 }
 /**
- * fetches all active hydrogen stations from NREL.
+ * Fetches all active hydrogen stations from NREL.
  * https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/all/
  */
 export async function getAvailableH2FuelStations(): Promise<GetFuelStationsResponseData> {
@@ -19,7 +19,7 @@ export async function getAvailableH2FuelStations(): Promise<GetFuelStationsRespo
         status: "E", // Available
         fuel_type: "HY", // Hydrogen
         hy_is_retail: true, // Retail hydrgoen stations
-        state: "CA",
+        state: "CA", // Restrict results to stations within California
       },
     }
   );

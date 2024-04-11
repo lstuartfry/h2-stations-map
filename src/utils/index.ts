@@ -12,7 +12,7 @@ const createPoint = (coordinates: LngLatLike) =>
  * Creates a GeoJson FeatureCollection from an array of values containing lat/lon coordinates.
  */
 const createFeatureCollection = (collection: LngLatLike[]) => {
-  // create a GeoJson Point for each value in the collection
+  // Create a GeoJson Point for each value in the collection
   const points = collection.map((coordinates) => createPoint(coordinates));
   return turf.featureCollection(points);
 };
