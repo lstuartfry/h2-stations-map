@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo, useRef } from "react";
 import Map, {
   NavigationControl,
   GeolocateControl,
   type MapRef,
   LngLatLike,
+  Marker,
 } from "react-map-gl";
 
 import { createBoundingBox } from "@/utils";
@@ -29,8 +30,19 @@ export default function FuelStationsMap({
     const stationsBoundingBox = createBoundingBox(coordinates);
 
     // Update the bounds of the map to fit the stations bounding box
-    mapRef.current?.fitBounds(stationsBoundingBox);
+    mapRef.current?.fitBounds(stationsBoundingBox, { padding: 50 });
   };
+
+  const renderMarkers = useMemo(() => {
+    return fuelStations.map((station) => (
+      <Marker
+        key={station.id}
+        latitude={station.latitude}
+        longitude={station.longitude}
+        color="#0391ab"
+      />
+    ));
+  }, [fuelStations]);
 
   return (
     <Map
@@ -44,6 +56,7 @@ export default function FuelStationsMap({
       mapStyle="mapbox://styles/mapbox/streets-v9"
       onLoad={onLoad}
     >
+      {renderMarkers}
       <NavigationControl />
       <GeolocateControl />
     </Map>
