@@ -2,16 +2,22 @@
 
 import { useMemo, useRef } from "react";
 import Map, {
-  NavigationControl,
   GeolocateControl,
-  type MapRef,
-  LngLatLike,
   Marker,
+  NavigationControl,
+  type GeolocateEvent,
+  type GeolocateResultEvent,
+  type LngLatLike,
+  type MapRef,
 } from "react-map-gl";
+import type mapboxgl from "mapbox-gl";
 
 import { createBoundingBox } from "@/utils";
 import { FuelStation } from "@/types";
 
+/**
+ * Renders an interactive map showing all available hydrogen stations.
+ */
 export default function FuelStationsMap({
   fuelStations,
 }: {
@@ -20,8 +26,13 @@ export default function FuelStationsMap({
   // Store a reference to the Map object to enable mapbox-gl api interactions.
   const mapRef = useRef<MapRef>(null);
 
-  // Once the Map object has loaded, update the bounds of the map to fit the bounding box of the fuel stations.
-  const onLoad = () => {
+  // Store a reference to the mapbox geocontrol api
+  const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
+
+  // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
+  const handleLoad = () => {
+    // Activate geolocation as soon as the control is loaded
+    geoControlRef.current?.trigger();
     // Create a nested array of coordinates for each fuel station
     const coordinates = fuelStations.map(
       (station) => [station.longitude, station.latitude] as LngLatLike
@@ -33,6 +44,11 @@ export default function FuelStationsMap({
     mapRef.current?.fitBounds(stationsBoundingBox, { padding: 50 });
   };
 
+  const handleGeolocate = (evt: GeolocateResultEvent) => {
+    console.log("geolocate event", evt);
+  };
+
+  // Returns an array of Marker components associated with each fuel station.
   const renderMarkers = useMemo(() => {
     return fuelStations.map((station) => (
       <Marker
@@ -54,11 +70,11 @@ export default function FuelStationsMap({
         zoom: 5,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
-      onLoad={onLoad}
+      onLoad={handleLoad}
     >
       {renderMarkers}
       <NavigationControl />
-      <GeolocateControl />
+      <GeolocateControl ref={geoControlRef} onGeolocate={handleGeolocate} />
     </Map>
   );
 }
