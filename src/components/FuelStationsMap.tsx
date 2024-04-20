@@ -19,21 +19,18 @@ export default function FuelStationsMap({
   // Store a reference to the Map object to enable mapbox-gl api interactions.
   const mapRef = useRef<MapRef>(null);
 
-  // Fit the map bounds around the bounds of the fuel stations
-  useEffect(() => {
-    // update the bounds of the map once the Map object has been initialized and there are fuel stations to render.
-    if (mapRef?.current && fuelStations?.length > 0) {
-      // Create a nested array of coordinates for each fuel station
-      const coordinates = fuelStations.map(
-        (station) => [station.longitude, station.latitude] as LngLatLike
-      );
-      // Create a bounding box for the all the stations coordinates
-      const stationsBoundingBox = createBoundingBox(coordinates);
+  // Once the Map object has loaded, update the bounds of the map to fit the bounding box of the fuel stations.
+  const onLoad = () => {
+    // Create a nested array of coordinates for each fuel station
+    const coordinates = fuelStations.map(
+      (station) => [station.longitude, station.latitude] as LngLatLike
+    );
+    // Create a bounding box for the all the stations coordinates
+    const stationsBoundingBox = createBoundingBox(coordinates);
 
-      // Update the bounds of the map to fit the stations bounding box
-      mapRef.current?.fitBounds(stationsBoundingBox);
-    }
-  }, [fuelStations]);
+    // Update the bounds of the map to fit the stations bounding box
+    mapRef.current?.fitBounds(stationsBoundingBox);
+  };
 
   return (
     <Map
@@ -42,9 +39,10 @@ export default function FuelStationsMap({
       initialViewState={{
         longitude: -118.243683,
         latitude: 34.052235,
-        zoom: 3,
+        zoom: 5,
       }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
+      onLoad={onLoad}
     >
       <NavigationControl />
       <GeolocateControl />
