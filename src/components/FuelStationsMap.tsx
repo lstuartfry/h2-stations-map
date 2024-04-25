@@ -70,6 +70,7 @@ export default function FuelStationsMap({
     } = evt;
     // Create a geojson point for the user's location.
     const centerPoint = turf.point([longitude, latitude]);
+
     // TODO, enable dynamic configuration for radius.
     const radius = 5;
 
@@ -110,7 +111,11 @@ export default function FuelStationsMap({
     >
       <DeckGLOverlay layers={[sectorLayer]} />
       <NavigationControl />
-      <GeolocateControl ref={geoControlRef} onGeolocate={handleGeolocate} />
+      <GeolocateControl
+        ref={geoControlRef}
+        onGeolocate={handleGeolocate}
+        fitBoundsOptions={{ maxZoom: 10 }}
+      />
       {renderMarkers}
     </Map>
   );

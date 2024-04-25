@@ -1,13 +1,13 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
-import { type Feature } from "geojson";
+import { type Feature, type Polygon, type GeoJsonProperties } from "geojson";
 
-export const createSectorLayer = (data?: Feature) =>
+/**
+ * Creates a Geojson Polygon 'sector' layer
+ */
+export const createSectorLayer = (data?: Feature<Polygon, GeoJsonProperties>) =>
   new GeoJsonLayer({
     data,
     id: "GeoJsonLayer",
-    stroked: true,
     filled: true,
-    pointType: "circle+text",
-    pickable: true,
-    getFillColor: [160, 160, 180, 200],
+    getFillColor: [255, 255, 102, 100],
   });
