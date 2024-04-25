@@ -13,11 +13,11 @@ import Map, {
 import type mapboxgl from "mapbox-gl";
 import { DeckProps } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
-import { GeoJsonLayer } from "@deck.gl/layers";
 import * as turf from "@turf/helpers";
 import turfSector from "@turf/sector";
 import { type Feature } from "geojson";
 
+import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
 import { FuelStation } from "@/types";
 
@@ -43,17 +43,10 @@ export default function FuelStationsMap({
   const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
-  const [stationSector, setStationSector] = useState<Feature>();
+  const [sector, setSector] = useState<Feature>();
 
-  const layer = new GeoJsonLayer({
-    data: stationSector,
-    id: "GeoJsonLayer",
-    stroked: true,
-    filled: true,
-    pointType: "circle+text",
-    pickable: true,
-    getFillColor: [160, 160, 180, 200],
-  });
+  // Create a geojson Sector-like layer
+  const sectorLayer = useMemo(() => createSectorLayer(sector), [sector]);
 
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
   const handleLoad = () => {
@@ -75,14 +68,20 @@ export default function FuelStationsMap({
     const {
       coords: { latitude, longitude },
     } = evt;
+    // Create a geojson point for the user's location.
     const centerPoint = turf.point([longitude, latitude]);
+    // TODO, enable dynamic configuration for radius.
     const radius = 5;
+
+    // Create a full circle sector.
     const bearing1 = 0;
     const bearing2 = 360;
-    const sector = turfSector(centerPoint, radius, bearing1, bearing2, {
+
+    const selectedSector = turfSector(centerPoint, radius, bearing1, bearing2, {
       units: "miles",
     });
-    setStationSector(sector);
+
+    setSector(selectedSector);
   };
 
   // Returns an array of Marker components associated with each fuel station.
@@ -109,10 +108,10 @@ export default function FuelStationsMap({
       mapStyle="mapbox://styles/mapbox/streets-v9"
       onLoad={handleLoad}
     >
-      <DeckGLOverlay layers={[layer]} />
-      {renderMarkers}
+      <DeckGLOverlay layers={[sectorLayer]} />
       <NavigationControl />
       <GeolocateControl ref={geoControlRef} onGeolocate={handleGeolocate} />
+      {renderMarkers}
     </Map>
   );
 }
