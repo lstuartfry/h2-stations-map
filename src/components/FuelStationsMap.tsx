@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import Map, {
-  GeolocateControl,
+  // GeolocateControl,
   Marker,
   NavigationControl,
   useControl,
@@ -64,7 +64,6 @@ export default function FuelStationsMap({
   };
 
   const handleGeolocate = (evt: GeolocateResultEvent) => {
-    console.log("geolocate event", evt);
     const {
       coords: { latitude, longitude },
     } = evt;
@@ -111,11 +110,11 @@ export default function FuelStationsMap({
     >
       <DeckGLOverlay layers={[sectorLayer]} />
       <NavigationControl />
-      <GeolocateControl
+      {/* <GeolocateControl
         ref={geoControlRef}
         onGeolocate={handleGeolocate}
         fitBoundsOptions={{ maxZoom: 10 }}
-      />
+      /> */}
       {renderMarkers}
     </Map>
   );
