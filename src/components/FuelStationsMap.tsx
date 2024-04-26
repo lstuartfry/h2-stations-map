@@ -99,7 +99,7 @@ export default function FuelStationsMap({
 
   return (
     <Map
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
+      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
       ref={mapRef}
       initialViewState={{
         longitude: -118.243683,
