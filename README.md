@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Overview (WIP)
+
+(04/25/24) This project is a work in progress! I'm currently building out functionality to allow users to choose between inputting their zip code & desired proximity of fuel stations to that zip code, or enabling more precise geolocation features.
+
+The goal of this project is to provide users with an overview of all active hydrogen fuel stations in their area. This project is built using the [Next.js](https://nextjs.org/) framework, and utilizes the [H2 Refuel API](https://developer.hydrogenplatform.com/docs/h2-refuel-api-v1-0) to fetch data on hydrogen fuel stations. It also integrates the [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding) to convert user inputted zip codes into latitude and longitude coordinates and map-friendly bounding boxes.
+
 ## Getting Started
 
 First, run the development server:
