@@ -13,6 +13,7 @@
     "@deck.gl/layers": "^9.0.10",
     "@deck.gl/mapbox": "^9.0.10",
     "@turf/bbox": "^6.5.0",
+    "@turf/boolean-point-in-polygon": "7.0.0-alpha.115",
     "@turf/helpers": "^6.5.0",
     "@turf/sector": "7.0.0-alpha.115",
     "axios": "^1.6.8",

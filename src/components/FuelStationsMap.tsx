@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import Map, {
-  // GeolocateControl,
+  GeolocateControl,
   Marker,
   NavigationControl,
   useControl,
@@ -14,7 +14,8 @@ import type mapboxgl from "mapbox-gl";
 import { DeckProps } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import * as turf from "@turf/helpers";
-import turfSector from "@turf/sector";
+import sector from "@turf/sector";
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { type Feature, type Polygon } from "geojson";
 
 import { createSectorLayer } from "@/layers";
@@ -43,10 +44,13 @@ export default function FuelStationsMap({
   const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
-  const [sector, setSector] = useState<Feature<Polygon>>();
+  const [priximitySector, setProximitySector] = useState<Feature<Polygon>>();
 
   // Create a geojson Sector-like layer
-  const sectorLayer = useMemo(() => createSectorLayer(sector), [sector]);
+  const proximitySectorLayer = useMemo(
+    () => createSectorLayer(priximitySector),
+    [priximitySector]
+  );
 
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
   const handleLoad = () => {
@@ -77,24 +81,46 @@ export default function FuelStationsMap({
     const bearing1 = 0;
     const bearing2 = 360;
 
-    const selectedSector = turfSector(centerPoint, radius, bearing1, bearing2, {
-      units: "miles",
-    });
+    const selectedProximitySector = sector(
+      centerPoint,
+      radius,
+      bearing1,
+      bearing2,
+      {
+        units: "miles",
+      }
+    );
 
-    setSector(selectedSector);
+    setProximitySector(selectedProximitySector);
   };
 
   // Returns an array of Marker components associated with each fuel station.
   const renderMarkers = useMemo(() => {
-    return fuelStations.map((station) => (
-      <Marker
-        key={station.id}
-        latitude={station.latitude}
-        longitude={station.longitude}
-        color="#0391ab"
-      />
-    ));
-  }, [fuelStations]);
+    return fuelStations.map((station) => {
+      const point = turf.point([station.longitude, station.latitude]);
+      const withinSelectedProximitySector =
+        priximitySector && booleanPointInPolygon(point, priximitySector);
+      console.log(
+        "withinSelectedProximitySector : ",
+        withinSelectedProximitySector,
+        station.station_name
+      );
+      const color = withinSelectedProximitySector ? "#9333ea" : "#0391ab";
+      const scale = withinSelectedProximitySector ? 2 : 1;
+      return (
+        <Marker
+          key={station.id}
+          latitude={station.latitude}
+          longitude={station.longitude}
+          color={color}
+          scale={scale}
+          style={{
+            zIndex: 10,
+          }}
+        />
+      );
+    });
+  }, [fuelStations, priximitySector]);
 
   return (
     <Map
@@ -108,13 +134,13 @@ export default function FuelStationsMap({
       mapStyle="mapbox://styles/mapbox/streets-v9"
       onLoad={handleLoad}
     >
-      <DeckGLOverlay layers={[sectorLayer]} />
+      <DeckGLOverlay layers={[proximitySectorLayer]} />
       <NavigationControl />
-      {/* <GeolocateControl
+      <GeolocateControl
         ref={geoControlRef}
         onGeolocate={handleGeolocate}
         fitBoundsOptions={{ maxZoom: 10 }}
-      /> */}
+      />
       {renderMarkers}
     </Map>
   );
