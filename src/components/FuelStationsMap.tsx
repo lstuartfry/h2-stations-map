@@ -15,7 +15,7 @@ import { DeckProps } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import * as turf from "@turf/helpers";
 import turfSector from "@turf/sector";
-import { type Feature } from "geojson";
+import { type Feature, type Polygon } from "geojson";
 
 import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
@@ -43,7 +43,7 @@ export default function FuelStationsMap({
   const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
-  const [sector, setSector] = useState<Feature>();
+  const [sector, setSector] = useState<Feature<Polygon>>();
 
   // Create a geojson Sector-like layer
   const sectorLayer = useMemo(() => createSectorLayer(sector), [sector]);
