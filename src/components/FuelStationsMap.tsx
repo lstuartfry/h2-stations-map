@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
@@ -21,6 +22,7 @@ import { type Feature, type Polygon } from "geojson";
 import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
 import { FuelStation } from "@/types";
+import PinSVG from "/public/pin.svg";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -100,24 +102,22 @@ export default function FuelStationsMap({
       const point = turf.point([station.longitude, station.latitude]);
       const withinSelectedProximitySector =
         priximitySector && booleanPointInPolygon(point, priximitySector);
-      console.log(
-        "withinSelectedProximitySector : ",
-        withinSelectedProximitySector,
-        station.station_name
-      );
       const color = withinSelectedProximitySector ? "#9333ea" : "#0391ab";
-      const scale = withinSelectedProximitySector ? 2 : 1;
+      const sizes = {
+        width: withinSelectedProximitySector ? 50 : 40,
+        height: withinSelectedProximitySector ? 50 : 40,
+      };
       return (
         <Marker
           key={station.id}
           latitude={station.latitude}
           longitude={station.longitude}
-          color={color}
-          scale={scale}
           style={{
             zIndex: 10,
           }}
-        />
+        >
+          <PinSVG style={{ color }} {...sizes} />
+        </Marker>
       );
     });
   }, [fuelStations, priximitySector]);
