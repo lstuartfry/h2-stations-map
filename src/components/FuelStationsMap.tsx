@@ -21,6 +21,7 @@ import { type Feature, type Polygon } from "geojson";
 
 import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
+import WelcomeDialog from "@/components/Dialog";
 import { FuelStation } from "@/types";
 import PinSVG from "/public/pin.svg";
 
@@ -57,7 +58,7 @@ export default function FuelStationsMap({
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
   const handleLoad = () => {
     // Activate geolocation as soon as the control is loaded
-    geoControlRef.current?.trigger();
+    // geoControlRef.current?.trigger();
     // Create a nested array of coordinates for each fuel station
     const coordinates = fuelStations.map(
       (station) => [station.longitude, station.latitude] as LngLatLike
@@ -96,6 +97,10 @@ export default function FuelStationsMap({
     setProximitySector(selectedProximitySector);
   };
 
+  const handleGeolocationEnable = () => {
+    geoControlRef.current?.trigger();
+  };
+
   // Returns an array of Marker components associated with each fuel station.
   const renderMarkers = useMemo(() => {
     return fuelStations.map((station) => {
@@ -109,6 +114,7 @@ export default function FuelStationsMap({
       };
       return (
         <Marker
+          anchor="bottom"
           key={station.id}
           latitude={station.latitude}
           longitude={station.longitude}
@@ -123,25 +129,31 @@ export default function FuelStationsMap({
   }, [fuelStations, priximitySector]);
 
   return (
-    <Map
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-      ref={mapRef}
-      initialViewState={{
-        longitude: -118.243683,
-        latitude: 34.052235,
-        zoom: 5,
-      }}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
-      onLoad={handleLoad}
-    >
-      <DeckGLOverlay layers={[proximitySectorLayer]} />
-      <NavigationControl />
-      <GeolocateControl
-        ref={geoControlRef}
-        onGeolocate={handleGeolocate}
-        fitBoundsOptions={{ maxZoom: 10 }}
+    <>
+      <WelcomeDialog
+        loaded={!!priximitySector}
+        onGeolocationEnable={handleGeolocationEnable}
       />
-      {renderMarkers}
-    </Map>
+      <Map
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+        ref={mapRef}
+        initialViewState={{
+          longitude: -118.243683,
+          latitude: 34.052235,
+          zoom: 5,
+        }}
+        mapStyle="mapbox://styles/mapbox/streets-v9"
+        onLoad={handleLoad}
+      >
+        <DeckGLOverlay layers={[proximitySectorLayer]} />
+        <NavigationControl />
+        <GeolocateControl
+          ref={geoControlRef}
+          onGeolocate={handleGeolocate}
+          fitBoundsOptions={{ maxZoom: 12 }}
+        />
+        {renderMarkers}
+      </Map>
+    </>
   );
 }
