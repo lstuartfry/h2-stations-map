@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
   Marker,
@@ -15,6 +14,7 @@ import type mapboxgl from "mapbox-gl";
 import { DeckProps } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import * as turf from "@turf/helpers";
+import { coordAll } from "@turf/meta";
 import sector from "@turf/sector";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { type Feature, type Polygon } from "geojson";
@@ -22,6 +22,7 @@ import { type Feature, type Polygon } from "geojson";
 import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
 import WelcomeDialog from "@/components/Dialog";
+import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
 import PinSVG from "/public/pin.svg";
 
@@ -48,6 +49,13 @@ export default function FuelStationsMap({
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
   const [priximitySector, setProximitySector] = useState<Feature<Polygon>>();
+
+  // A user's lat/lon coordinates, stored as a Geojson feature
+  const [centerPoint, setCenterPoint] = useState<Feature>();
+
+  // Store a reference to the desired proximity of fuel stations from the user's current location.
+  const [selectedProximityRadius, setSelectedProximityRadius] =
+    useState<number>(5);
 
   // Create a geojson Sector-like layer
   const proximitySectorLayer = useMemo(
@@ -76,30 +84,43 @@ export default function FuelStationsMap({
     } = evt;
     // Create a geojson point for the user's location.
     const centerPoint = turf.point([longitude, latitude]);
-
-    // TODO, enable dynamic configuration for radius.
-    const radius = 5;
-
-    // Create a full circle sector.
-    const bearing1 = 0;
-    const bearing2 = 360;
-
-    const selectedProximitySector = sector(
-      centerPoint,
-      radius,
-      bearing1,
-      bearing2,
-      {
-        units: "miles",
-      }
-    );
-
-    setProximitySector(selectedProximitySector);
+    setCenterPoint(centerPoint);
   };
 
   const handleGeolocationEnable = () => {
     geoControlRef.current?.trigger();
   };
+
+  // updates the Proximity sector whenever a user's location or desired fuel station proximity option is updated.
+  useEffect(() => {
+    if (centerPoint) {
+      // Create a full circle sector.
+      const bearing1 = 0;
+      const bearing2 = 360;
+
+      const selectedProximitySector = sector(
+        centerPoint,
+        selectedProximityRadius,
+        bearing1,
+        bearing2,
+        {
+          units: "miles",
+        }
+      );
+
+      // update the Sector data in component state.
+      setProximitySector(selectedProximitySector);
+
+      // create a bounding box for the sector.
+      const sectorCoords = coordAll(
+        selectedProximitySector
+      ) as unknown as LngLatLike[];
+      const sectorBoundingBox = createBoundingBox(sectorCoords);
+
+      // Update the bounds of the map to fit the bounding box of the sector.
+      mapRef.current?.fitBounds(sectorBoundingBox, { padding: 50 });
+    }
+  }, [centerPoint, selectedProximityRadius]);
 
   // Returns an array of Marker components associated with each fuel station.
   const renderMarkers = useMemo(() => {
@@ -133,6 +154,10 @@ export default function FuelStationsMap({
       <WelcomeDialog
         loaded={!!priximitySector}
         onGeolocationEnable={handleGeolocationEnable}
+      />
+      <ProximitySelect
+        selectedProximityRadius={selectedProximityRadius}
+        onChange={(value: number) => setSelectedProximityRadius(value)}
       />
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
