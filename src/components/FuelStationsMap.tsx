@@ -21,7 +21,7 @@ import { type Feature, type Polygon } from "geojson";
 
 import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
-import WelcomeDialog from "@/components/Dialog";
+import WelcomeDialog from "@/components/WelcomeDialog";
 import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
 import PinSVG from "/public/pin.svg";
@@ -87,6 +87,7 @@ export default function FuelStationsMap({
     setCenterPoint(centerPoint);
   };
 
+  // handler to manually trigger the geolocation API
   const handleGeolocationEnable = () => {
     geoControlRef.current?.trigger();
   };
