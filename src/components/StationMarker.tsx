@@ -42,7 +42,7 @@ export default function StationMarker({
     return (
       <svg {...sizes} viewBox="0 0 64 64">
         <path
-          className="hover:stroke-2 hover:stroke-blue-300"
+          className="hover:stroke-2 hover:stroke-blue-300 drop-shadow-[1px_1px_1px_rgba(0,0,0,0.7)]"
           fill={color}
           d="M32 0A24.032 24.032 0 0 0 8 24c0 17.23 22.36 38.81 23.31 39.72a.99.99 0 0 0 1.38 0C33.64 62.81 56 41.23 56 24A24.032 24.032 0 0 0 32 0zm0 35a11 11 0 1 1 11-11 11.007 11.007 0 0 1-11 11z"
         />
