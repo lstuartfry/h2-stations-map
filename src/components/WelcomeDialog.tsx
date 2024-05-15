@@ -44,8 +44,10 @@ export default function WelcomeDialog({
             <div>
               H2 stations within <strong>5</strong> miles of your current
               location will be{" "}
-              <span className="text-primary-purple">highlighted</span> on the
-              map. This distance can be adjusted.
+              <span className="text-primary-purple font-semibold">
+                highlighted
+              </span>{" "}
+              on the map. This distance can be adjusted.
             </div>
           </div>
         </div>
