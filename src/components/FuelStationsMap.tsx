@@ -174,7 +174,6 @@ export default function FuelStationsMap({
             latitude={stationPopupInfo.latitude}
             longitude={stationPopupInfo.longitude}
             className="z-20"
-            maxWidth="none"
             anchor="bottom"
             offset={55}
             onClose={() => setStationPopupInfo(null)}

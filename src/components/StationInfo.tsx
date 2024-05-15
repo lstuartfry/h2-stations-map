@@ -7,8 +7,8 @@ import { type FuelStation } from "@/types";
  */
 export default function StationInfo({ station }: { station: FuelStation }) {
   return (
-    <div className="mt-3 flex flex-col gap-3">
-      <span className="text-sm font-semibold">{station.station_name}</span>
+    <div className="mt-3 flex flex-col gap-3 text-lg">
+      <span className="font-semibold">{station.station_name}</span>
       <div>
         See station&apos;s up-to-date fuel status at{" "}
         <Link
@@ -20,11 +20,17 @@ export default function StationInfo({ station }: { station: FuelStation }) {
         </Link>
       </div>
       <div>
-        {station.street_address}, {station.zip}
+        <Link
+          className="text-blue-300"
+          target="_blank"
+          href={`https://google.com/maps/dir//${station.latitude},${station.longitude}`}
+        >
+          Get directions - {station.street_address}, {station.zip}
+        </Link>
       </div>
       <span>
         <Link className="text-blue-300" href={`tel:${station.station_phone}`}>
-          {station.station_phone}
+          Call - {station.station_phone}
         </Link>
       </span>
     </div>
