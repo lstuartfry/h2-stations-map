@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
-  Marker,
   NavigationControl,
   useControl,
+  Popup,
   type GeolocateResultEvent,
   type LngLatLike,
   type MapRef,
@@ -16,7 +16,6 @@ import { MapboxOverlay } from "@deck.gl/mapbox";
 import * as turf from "@turf/helpers";
 import { coordAll } from "@turf/meta";
 import sector from "@turf/sector";
-import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { type Feature, type Polygon } from "geojson";
 
 import { createSectorLayer } from "@/layers";
@@ -24,7 +23,8 @@ import { createBoundingBox } from "@/utils";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
-import PinSVG from "/public/pin.svg";
+import StationMarker from "./StationMarker";
+import StationInfo from "./StationInfo";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -48,7 +48,7 @@ export default function FuelStationsMap({
   const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
-  const [priximitySector, setProximitySector] = useState<Feature<Polygon>>();
+  const [proximitySector, setProximitySector] = useState<Feature<Polygon>>();
 
   // A user's lat/lon coordinates, stored as a Geojson feature
   const [centerPoint, setCenterPoint] = useState<Feature>();
@@ -57,10 +57,15 @@ export default function FuelStationsMap({
   const [selectedProximityRadius, setSelectedProximityRadius] =
     useState<number>(5);
 
+  // trigger to display the Popup which renders metadata about the fuel station.
+  const [stationPopupInfo, setStationPopupInfo] = useState<FuelStation | null>(
+    null
+  );
+
   // Create a geojson Sector-like layer
   const proximitySectorLayer = useMemo(
-    () => createSectorLayer(priximitySector),
-    [priximitySector]
+    () => createSectorLayer(proximitySector),
+    [proximitySector]
   );
 
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
@@ -125,35 +130,20 @@ export default function FuelStationsMap({
 
   // Returns an array of Marker components associated with each fuel station.
   const renderMarkers = useMemo(() => {
-    return fuelStations.map((station) => {
-      const point = turf.point([station.longitude, station.latitude]);
-      const withinSelectedProximitySector =
-        priximitySector && booleanPointInPolygon(point, priximitySector);
-      const color = withinSelectedProximitySector ? "#9333ea" : "#0391ab";
-      const sizes = {
-        width: withinSelectedProximitySector ? 50 : 40,
-        height: withinSelectedProximitySector ? 50 : 40,
-      };
-      return (
-        <Marker
-          anchor="bottom"
-          key={station.id}
-          latitude={station.latitude}
-          longitude={station.longitude}
-          style={{
-            zIndex: 10,
-          }}
-        >
-          <PinSVG style={{ color }} {...sizes} />
-        </Marker>
-      );
-    });
-  }, [fuelStations, priximitySector]);
+    return fuelStations.map((station) => (
+      <StationMarker
+        key={station.id}
+        station={station}
+        proximitySector={proximitySector}
+        onClick={() => setStationPopupInfo(station)}
+      />
+    ));
+  }, [fuelStations, proximitySector]);
 
   return (
     <>
       <WelcomeDialog
-        loaded={!!priximitySector}
+        loaded={!!proximitySector}
         onGeolocationEnable={handleGeolocationEnable}
       />
       <ProximitySelect
@@ -179,6 +169,19 @@ export default function FuelStationsMap({
           fitBoundsOptions={{ maxZoom: 12 }}
         />
         {renderMarkers}
+        {stationPopupInfo && (
+          <Popup
+            latitude={stationPopupInfo.latitude}
+            longitude={stationPopupInfo.longitude}
+            className="z-20"
+            maxWidth="none"
+            anchor="bottom"
+            offset={55}
+            onClose={() => setStationPopupInfo(null)}
+          >
+            <StationInfo station={stationPopupInfo} />
+          </Popup>
+        )}
       </Map>
     </>
   );

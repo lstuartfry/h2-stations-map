@@ -6,3 +6,8 @@ html,
 body {
   height: 100vh;
 }
+
+/* Override particular default mapbox styles */
+.mapboxgl-popup-close-button {
+  padding: 2px 6px;
+}

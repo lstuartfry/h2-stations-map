@@ -7,13 +7,13 @@ import LoadingSVG from "/public/loading.svg";
 /**
  * A dialogue displayed to the user when the application is first loaded.
  */
-const WelcomeDialog = ({
+export default function WelcomeDialog({
   loaded,
   onGeolocationEnable,
 }: {
   loaded: boolean;
   onGeolocationEnable: () => void;
-}) => {
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [loadingGeolocation, setLoadingGeolocation] = useState<boolean>(false);
 
@@ -74,6 +74,4 @@ const WelcomeDialog = ({
       </div>
     </Dialog>
   );
-};
-
-export default WelcomeDialog;
+}
