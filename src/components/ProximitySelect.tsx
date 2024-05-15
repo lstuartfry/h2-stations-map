@@ -6,7 +6,6 @@ import {
   Transition,
 } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
 
 const options = [1, 2, 5, 10, 15, 25];
 

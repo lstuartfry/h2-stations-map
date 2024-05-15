@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import clsx from "clsx";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 import LoadingSVG from "/public/loading.svg";
@@ -44,18 +43,16 @@ export default function WelcomeDialog({
           <div className="mt-4 flex flex-col gap-3">
             <div>
               H2 stations within <strong>5</strong> miles of your current
-              location will be highlighted on the map. This distance can be
-              adjusted.
+              location will be{" "}
+              <span className="text-primary-purple">highlighted</span> on the
+              map. This distance can be adjusted.
             </div>
           </div>
         </div>
         <div className="flex gap-3 items-center">
           Enable location services to get started:
           <Button
-            className={clsx(
-              "items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white",
-              !loaded ? "inline-flex" : "hidden"
-            )}
+            className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white data-[hover]:bg-gray-600 data-[active]:scale-95"
             onClick={onEnable}
           >
             Enable
@@ -63,7 +60,7 @@ export default function WelcomeDialog({
         </div>
       </div>
     );
-  }, [loaded, loadingGeolocation, onEnable]);
+  }, [loadingGeolocation, onEnable]);
 
   return (
     <Dialog open={isOpen} onClose={() => {}} className="relative z-50">

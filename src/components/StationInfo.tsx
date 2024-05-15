@@ -10,7 +10,7 @@ export default function StationInfo({ station }: { station: FuelStation }) {
     <div className="mt-3 flex flex-col gap-3">
       <span className="text-sm font-semibold">{station.station_name}</span>
       <div>
-        See station&apos;s up-to-date status at{" "}
+        See station&apos;s up-to-date fuel status at{" "}
         <Link
           className="text-blue-300"
           target="_blank"
