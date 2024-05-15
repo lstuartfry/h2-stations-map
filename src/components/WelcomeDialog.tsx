@@ -37,10 +37,10 @@ export default function WelcomeDialog({
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <DialogTitle className="font-bold">
+          <DialogTitle className="font-bold text-2xl">
             Welcome to H2 Stations Map!
           </DialogTitle>
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 flex flex-col gap-3 text-lg">
             <div>
               H2 stations within <strong>5</strong> miles of your current
               location will be{" "}
@@ -51,7 +51,7 @@ export default function WelcomeDialog({
             </div>
           </div>
         </div>
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center text-lg">
           Enable location services to get started:
           <Button
             className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white data-[hover]:bg-gray-600 data-[active]:scale-95"
