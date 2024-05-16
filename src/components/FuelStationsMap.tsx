@@ -62,10 +62,15 @@ export default function FuelStationsMap({
     null
   );
 
+  const [isSectorVisibile, setIsSectorVisible] = useState<boolean>(true);
+
+  // toggle to trigger the visibility of the sector layer
+  const onToggleSectorVisibility = () => setIsSectorVisible((s) => !s);
+
   // Create a geojson Sector-like layer
   const proximitySectorLayer = useMemo(
-    () => createSectorLayer(proximitySector),
-    [proximitySector]
+    () => createSectorLayer(proximitySector, isSectorVisibile),
+    [proximitySector, isSectorVisibile]
   );
 
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
@@ -149,6 +154,8 @@ export default function FuelStationsMap({
       <ProximitySelect
         selectedProximityRadius={selectedProximityRadius}
         onChange={(value: number) => setSelectedProximityRadius(value)}
+        onToggleSector={onToggleSectorVisibility}
+        checked={isSectorVisibile}
       />
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
