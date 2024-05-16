@@ -169,12 +169,14 @@ export default function FuelStationsMap({
         onGeolocationEnable={handleGeolocationEnable}
         onAddressSuccess={handleAddressSuccess}
       />
-      <ProximitySelect
-        selectedProximityRadius={selectedProximityRadius}
-        onChange={(value: number) => setSelectedProximityRadius(value)}
-        onToggleSector={onToggleSectorVisibility}
-        checked={isSectorVisibile}
-      />
+      {proximitySector && (
+        <ProximitySelect
+          selectedProximityRadius={selectedProximityRadius}
+          onChange={(value: number) => setSelectedProximityRadius(value)}
+          onToggleSector={onToggleSectorVisibility}
+          checked={isSectorVisibile}
+        />
+      )}
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         ref={mapRef}
