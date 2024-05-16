@@ -20,17 +20,19 @@ export default function StationInfo({ station }: { station: FuelStation }) {
         </Link>
       </div>
       <div>
+        {station.street_address}, {station.zip}{" "}
         <Link
           className="text-blue-300"
           target="_blank"
           href={`https://google.com/maps/dir//${station.latitude},${station.longitude}`}
         >
-          Get directions - {station.street_address}, {station.zip}
+          (Get directions)
         </Link>
       </div>
       <span>
+        {station.station_phone}{" "}
         <Link className="text-blue-300" href={`tel:${station.station_phone}`}>
-          Call - {station.station_phone}
+          (Call)
         </Link>
       </span>
     </div>

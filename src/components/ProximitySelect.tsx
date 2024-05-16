@@ -1,13 +1,9 @@
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition,
-} from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Description, Field, Label, Select } from "@headlessui/react";
+import clsx from "clsx";
 
-const options = [1, 2, 5, 10, 15, 25];
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
+const options = ["1", "2", "5", "10", "15", "25"];
 
 type Props = {
   selectedProximityRadius: number;
@@ -18,38 +14,34 @@ export default function ProximitySelect(props: Props) {
   const { selectedProximityRadius, onChange } = props;
 
   return (
-    <div className="absolute z-20 right-12 px-3 py-1 top-3 rounded-md flex items-center bg-white">
-      (mi)
-      <Listbox value={selectedProximityRadius} onChange={onChange}>
-        <ListboxButton className="relative block w-full py-1.5 pr-8 pl-3 hover:bg-slate-100">
-          {selectedProximityRadius}
+    <div className="absolute top-2 right-12 z-20 bg-white p-4 rounded-md shadow-md">
+      <Field>
+        <Label className="text-base font-medium text-black">
+          Proximity (miles)
+        </Label>
+        <Description className="text-sm/6 text-black/50 max-w-48">
+          Draws a sector on the map highlighting stations within the selected
+          proximity to your location.
+        </Description>
+        <div className="relative">
+          <Select
+            className={clsx(
+              "block w-full appearance-none rounded-lg py-1.5 px-3",
+              "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
+            )}
+            onChange={(e) => onChange(Number(e.target.value))}
+            value={selectedProximityRadius}
+          >
+            {options.map((value) => (
+              <option key={value} label={value} value={value} />
+            ))}
+          </Select>
           <ChevronDownIcon
-            className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-black/60"
+            className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-white/60"
             aria-hidden="true"
           />
-        </ListboxButton>
-        <Transition
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <ListboxOptions
-            anchor="bottom"
-            className="rounded-xl bg-white borderp-1 mt-2 z-20"
-          >
-            {options.map((option) => (
-              <ListboxOption
-                key={option}
-                value={option}
-                className="group flex cursor-pointer items-center gap-2 py-1.5 px-3 hover:bg-slate-100"
-              >
-                <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-                <div>{option}</div>
-              </ListboxOption>
-            ))}
-          </ListboxOptions>
-        </Transition>
-      </Listbox>
+        </div>
+      </Field>
     </div>
   );
 }
