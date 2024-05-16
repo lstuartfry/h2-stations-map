@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
   NavigationControl,
@@ -25,6 +25,7 @@ import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
+import { type GetAddressGeocodingResponseData } from "@/actions";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -88,6 +89,7 @@ export default function FuelStationsMap({
     mapRef.current?.fitBounds(stationsBoundingBox, { padding: 50 });
   };
 
+  // callback triggered when a user's location is fetched via the mapbox geolocation API.
   const handleGeolocate = (evt: GeolocateResultEvent) => {
     const {
       coords: { latitude, longitude },
@@ -100,6 +102,15 @@ export default function FuelStationsMap({
   // handler to manually trigger the geolocation API
   const handleGeolocationEnable = () => {
     geoControlRef.current?.trigger();
+  };
+
+  // callback triggered when a user manually enters their address.
+  const handleAddressSuccess = (data: GetAddressGeocodingResponseData) => {
+    const { latitude, longitude } = data.features[0].properties.coordinates;
+
+    // Create a geojson point for the user's address.
+    const centerPoint = turf.point([longitude, latitude]);
+    setCenterPoint(centerPoint);
   };
 
   // updates the Proximity sector whenever a user's location or desired fuel station proximity option is updated.
@@ -150,6 +161,7 @@ export default function FuelStationsMap({
       <WelcomeDialog
         loaded={!!proximitySector}
         onGeolocationEnable={handleGeolocationEnable}
+        onAddressSuccess={handleAddressSuccess}
       />
       <ProximitySelect
         selectedProximityRadius={selectedProximityRadius}
