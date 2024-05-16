@@ -1,9 +1,18 @@
-https://github.com/lstuartfry/h2-stations-map/assets/14063740/62c89b44-46a2-4ceb-868e-04d3b873f560
+
+https://github.com/lstuartfry/h2-stations-map/assets/14063740/ac7b6ddd-188c-4ea8-abdb-c863373b74e8
 
 
 ## Overview
 
 This application provides users with a map of all active hydrogen fuel stations in their area. Along with the location of the stations, users can see which stations are closest to their current location. Finally, when focusing on a specific station, users can view up-to-date fuel status of the station by following a link to the stations website via the [hydrogen fuel cell partenrship](https://cafcp.org/stationmap).
+
+## Features
+
+Users are given two options for locations stations near their area. They can either allow the browser to pintpoint their current location, or enter their address directly.
+
+### Demo - Address entry
+
+https://github.com/lstuartfry/h2-stations-map/assets/14063740/e5edd6b9-301a-4567-b923-d2930abba616
 
 ## Technologies Used
 
