@@ -9,6 +9,7 @@ import Map, {
   type GeolocateResultEvent,
   type LngLatLike,
   type MapRef,
+  Marker,
 } from "react-map-gl";
 import type mapboxgl from "mapbox-gl";
 import { DeckProps } from "@deck.gl/core";
@@ -104,6 +105,10 @@ export default function FuelStationsMap({
     geoControlRef.current?.trigger();
   };
 
+  const [addressMarker, setAddressMarker] = useState<{
+    latitude: number;
+    longitude: number;
+  }>();
   // callback triggered when a user manually enters their address.
   const handleAddressSuccess = (data: GetAddressGeocodingResponseData) => {
     const { latitude, longitude } = data.features[0].properties.coordinates;
@@ -111,6 +116,7 @@ export default function FuelStationsMap({
     // Create a geojson point for the user's address.
     const centerPoint = turf.point([longitude, latitude]);
     setCenterPoint(centerPoint);
+    setAddressMarker({ latitude, longitude });
   };
 
   // updates the Proximity sector whenever a user's location or desired fuel station proximity option is updated.
@@ -188,6 +194,13 @@ export default function FuelStationsMap({
           fitBoundsOptions={{ maxZoom: 12 }}
         />
         {renderMarkers}
+        {addressMarker && (
+          <Marker
+            latitude={addressMarker.latitude}
+            longitude={addressMarker.longitude}
+            style={{ zIndex: 20 }}
+          />
+        )}
         {stationPopupInfo && (
           <Popup
             latitude={stationPopupInfo.latitude}
