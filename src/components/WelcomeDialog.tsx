@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
+import EnableGPSButton from "@/components/buttons/EnableGPS";
 import AddressForm from "./AddressForm";
 import CloseSVG from "/public/close.svg";
 import LoadingSVG from "/public/loading.svg";
 import RightArrowSVG from "/public/right-arrow.svg";
+import WarningSVG from "/public/warning.svg";
 import { type GetAddressGeocodingResponseData } from "@/actions";
 
 /**
@@ -14,10 +16,12 @@ import { type GetAddressGeocodingResponseData } from "@/actions";
  */
 export default function WelcomeDialog({
   loaded,
+  geolocateError,
   onGeolocationEnable,
   onAddressSuccess,
 }: {
   loaded: boolean;
+  geolocateError?: boolean;
   onGeolocationEnable: () => void;
   onAddressSuccess: (data: GetAddressGeocodingResponseData) => void;
 }) {
@@ -48,21 +52,36 @@ export default function WelcomeDialog({
           <AddressForm onSuccess={onAddressSuccess} />
         </div>
       );
+    if (geolocateError)
+      return (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col items-center font-semibold text-lg">
+            <WarningSVG width={40} height={40} />
+            It looks like there was an error encountered fetching your
+            geolocation.
+          </div>
+          <div>
+            Try enabling location services for your browser and clicking the
+            retry button below:
+          </div>
+          <EnableGPSButton onClick={onEnable}>
+            Retry enabling GPS
+          </EnableGPSButton>
+          <span className="text-sm italic mt-4">
+            (or, simply close this dialog to begin browsing the map)
+          </span>
+        </div>
+      );
     if (loadingGeolocation)
       return (
         <div className="flex justify-center items-center gap-3">
-          <div>Fetching your location </div>
+          <div>Fetching your location</div>
           <LoadingSVG className="animate-spin" />
         </div>
       );
+
     return (
       <div className="flex flex-col gap-6">
-        <button
-          className="flex w-fit self-end -mt-6 -mr-6"
-          onClick={() => setIsOpen(false)}
-        >
-          <CloseSVG width={20} height={20} />
-        </button>
         <DialogTitle className="font-bold text-2xl">
           Welcome to H2 Stations Map!
         </DialogTitle>
@@ -89,12 +108,7 @@ export default function WelcomeDialog({
           <div className="mt-4 grid grid-cols-2 gap-6">
             <div>
               <div className="flex flex-col gap-3 text-base">
-                <Button
-                  className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white data-[hover]:bg-gray-600 data-[active]:scale-95"
-                  onClick={onEnable}
-                >
-                  Enable GPS
-                </Button>
+                <EnableGPSButton onClick={onEnable}>Enable GPS</EnableGPSButton>
               </div>
             </div>
             <div className=" flex flex-col gap-3 text-base">
@@ -110,7 +124,13 @@ export default function WelcomeDialog({
         </div>
       </div>
     );
-  }, [loadingGeolocation, onAddressSuccess, onEnable, showAddressForm]);
+  }, [
+    geolocateError,
+    loadingGeolocation,
+    onAddressSuccess,
+    onEnable,
+    showAddressForm,
+  ]);
 
   return (
     <Dialog
@@ -119,7 +139,13 @@ export default function WelcomeDialog({
       className="relative z-50"
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-white/50">
-        <DialogPanel className="w-[500px] border bg-white p-12 shadow-lg">
+        <DialogPanel className="flex flex-col w-[500px] border bg-white p-12 shadow-lg">
+          <button
+            className="flex w-fit self-end -mt-6 -mr-6"
+            onClick={() => setIsOpen(false)}
+          >
+            <CloseSVG width={20} height={20} />
+          </button>
           {content}
         </DialogPanel>
       </div>

@@ -64,6 +64,7 @@ export default function FuelStationsMap({
     null
   );
 
+  // visibility toggle state for the Sector layer
   const [isSectorVisibile, setIsSectorVisible] = useState<boolean>(true);
 
   // toggle to trigger the visibility of the sector layer
@@ -92,12 +93,20 @@ export default function FuelStationsMap({
 
   // callback triggered when a user's location is fetched via the mapbox geolocation API.
   const handleGeolocate = (evt: GeolocateResultEvent) => {
+    // clear geolocation-related error state if it exists
+    if (geolocateError) setGeolocateError(false);
     const {
       coords: { latitude, longitude },
     } = evt;
     // Create a geojson point for the user's location.
     const centerPoint = turf.point([longitude, latitude]);
     setCenterPoint(centerPoint);
+  };
+
+  const [geolocateError, setGeolocateError] = useState<boolean>();
+  // callback triggered when a request for a user's location returns an error
+  const handleGeolocateError = (_evt: GeolocateResultEvent) => {
+    setGeolocateError(true);
   };
 
   // handler to manually trigger the geolocation API
@@ -166,6 +175,7 @@ export default function FuelStationsMap({
     <>
       <WelcomeDialog
         loaded={!!proximitySector}
+        geolocateError={geolocateError}
         onGeolocationEnable={handleGeolocationEnable}
         onAddressSuccess={handleAddressSuccess}
       />
@@ -193,6 +203,7 @@ export default function FuelStationsMap({
         <GeolocateControl
           ref={geoControlRef}
           onGeolocate={handleGeolocate}
+          onError={handleGeolocateError}
           fitBoundsOptions={{ maxZoom: 12 }}
         />
         {renderMarkers}
