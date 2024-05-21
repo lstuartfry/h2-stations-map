@@ -29,7 +29,7 @@ export default function ProximitySelect(props: Props) {
           <div className="relative">
             <Select
               className={clsx(
-                "block w-full appearance-none rounded-lg py-1.5 px-3",
+                "block w-full appearance-none rounded-lg py-1.5 px-3 border",
                 "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
               )}
               onChange={(e) => onChange(Number(e.target.value))}
@@ -40,7 +40,7 @@ export default function ProximitySelect(props: Props) {
               ))}
             </Select>
             <ChevronDownIcon
-              className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-white/60"
+              className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-black/65"
               aria-hidden="true"
             />
           </div>
