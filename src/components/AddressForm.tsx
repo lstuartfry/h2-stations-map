@@ -61,7 +61,7 @@ export default function AddressForm({
           </div>
         )}
         <Button
-          className="flex justify-around items-center rounded-md bg-gray-200 py-1.5 px-3 text-sm/6 font-semibold text-black data-[hover]:bg-gray-300 data-[active]:scale-95"
+          className="flex mt-6 justify-around items-center rounded-md bg-gray-200 py-1.5 px-3 text-sm/6 font-semibold text-black data-[hover]:bg-gray-300 data-[active]:scale-95"
           type="submit"
         >
           Submit
