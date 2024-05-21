@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
   NavigationControl,
@@ -26,6 +27,7 @@ import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
+import GithubSVG from "/public/github.svg";
 import { type GetAddressGeocodingResponseData } from "@/actions";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
@@ -104,8 +106,9 @@ export default function FuelStationsMap({
   };
 
   const [geolocateError, setGeolocateError] = useState<boolean>();
+
   // callback triggered when a request for a user's location returns an error
-  const handleGeolocateError = (_evt: GeolocateResultEvent) => {
+  const handleGeolocateError = () => {
     setGeolocateError(true);
   };
 
@@ -118,6 +121,7 @@ export default function FuelStationsMap({
     latitude: number;
     longitude: number;
   }>();
+
   // callback triggered when a user manually enters their address.
   const handleAddressSuccess = (data: GetAddressGeocodingResponseData) => {
     const { latitude, longitude } = data.features[0].properties.coordinates;
@@ -206,6 +210,11 @@ export default function FuelStationsMap({
           onError={handleGeolocateError}
           fitBoundsOptions={{ maxZoom: 12 }}
         />
+        <div className="absolute bottom-8 right-2">
+          <Link href="https://github.com/lstuartfry/h2-stations-map">
+            <GithubSVG width={40} height={40} />
+          </Link>
+        </div>
         {renderMarkers}
         {addressMarker && (
           <Marker
