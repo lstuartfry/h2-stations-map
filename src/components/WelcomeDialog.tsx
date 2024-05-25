@@ -138,7 +138,7 @@ export default function WelcomeDialog({
       onClose={() => setIsOpen(false)}
       className="relative z-50"
     >
-      <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-white/50">
+      <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-white/90">
         <DialogPanel className="flex flex-col w-[500px] border bg-white p-12 shadow-lg">
           <button
             className="flex w-fit self-end -mt-6 -mr-6"
