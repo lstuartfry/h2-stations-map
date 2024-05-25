@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
-const options = ["1", "2", "5", "10", "15", "25"];
+const options = ["1", "2", "5", "10", "15", "25", "50", "75", "100"];
 
 type Props = {
   selectedProximityRadius: number;
