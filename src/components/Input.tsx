@@ -1,3 +1,4 @@
+import { type HTMLInputTypeAttribute } from "react";
 import { Field, Input as InputField, Label } from "@headlessui/react";
 import clsx from "clsx";
 
@@ -6,6 +7,7 @@ interface Props {
   label: string;
   name: string;
   placeholder: string;
+  type?: HTMLInputTypeAttribute;
 }
 
 /**
@@ -17,6 +19,7 @@ export default function Input({
   label,
   name,
   placeholder,
+  type = "text",
 }: Props) {
   return (
     <Field>
@@ -35,6 +38,7 @@ export default function Input({
         )}
         name={name}
         placeholder={placeholder}
+        type={type}
       />
       {errorMessage && <span className="text-red-400">{errorMessage}</span>}
     </Field>

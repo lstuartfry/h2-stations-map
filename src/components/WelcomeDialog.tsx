@@ -9,7 +9,7 @@ import CloseSVG from "public/close.svg";
 import LoadingSVG from "public/loading.svg";
 import RightArrowSVG from "public/right-arrow.svg";
 import WarningSVG from "public/warning.svg";
-import { type GetAddressGeocodingResponseData } from "@/actions";
+import { type GetAddressGeocodingResponseData } from "@/actions/types";
 
 /**
  * A dialogue displayed to the user when the application is first loaded.

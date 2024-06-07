@@ -28,7 +28,7 @@ import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
 import GithubSVG from "public/github.svg";
-import { type GetAddressGeocodingResponseData } from "@/actions";
+import { type GetAddressGeocodingResponseData } from "@/actions/types";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
