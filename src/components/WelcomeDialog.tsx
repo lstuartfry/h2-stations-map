@@ -5,10 +5,10 @@ import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 import EnableGPSButton from "@/components/buttons/EnableGPS";
 import AddressForm from "./AddressForm";
-import CloseSVG from "/public/close.svg";
-import LoadingSVG from "/public/loading.svg";
-import RightArrowSVG from "/public/right-arrow.svg";
-import WarningSVG from "/public/warning.svg";
+import CloseSVG from "public/close.svg";
+import LoadingSVG from "public/loading.svg";
+import RightArrowSVG from "public/right-arrow.svg";
+import WarningSVG from "public/warning.svg";
 import { type GetAddressGeocodingResponseData } from "@/actions";
 
 /**

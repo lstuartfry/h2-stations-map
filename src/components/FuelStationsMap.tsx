@@ -27,7 +27,7 @@ import ProximitySelect from "@/components/ProximitySelect";
 import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
-import GithubSVG from "/public/github.svg";
+import GithubSVG from "public/github.svg";
 import { type GetAddressGeocodingResponseData } from "@/actions";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
