@@ -2,12 +2,13 @@
 
 import { useFormState } from "react-dom";
 import { Button } from "@headlessui/react";
+import { useEffect } from "react";
 
 import {
   getAddressGeocode,
   type GetAddressGeocodingResponseData,
 } from "@/actions";
-import { useEffect } from "react";
+import Input from "@/components/Input";
 
 export default function AddressForm({
   onSuccess,
@@ -29,32 +30,17 @@ export default function AddressForm({
     <form action={action}>
       <div className="text-lg font-semibold">Enter your address</div>
       <div className="flex flex-col gap-4">
-        <div className="mt-6 flex flex-col gap-2">
-          <label className="text-black/60" htmlFor="addressNumber">
-            Street Number
-          </label>
-          <input
-            name="addressNumber"
-            className="border rounded p-2 w-full"
-            id="addressNumber"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-black/60" htmlFor="street">
-            Street
-          </label>
-          <input
-            name="street"
-            className="border rounded p-2 w-full"
-            id="addressstreetNumber"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-black/60" htmlFor="zip">
-            Zip code
-          </label>
-          <input name="zip" className="border rounded p-2 w-full" id="zip" />
-        </div>
+        <Input
+          label="Street number"
+          placeholder="enter your street number"
+          name="addressNumber"
+        />
+        <Input
+          label="Street name"
+          placeholder="enter your street name"
+          name="street"
+        />
+        <Input label="Zip code" placeholder="enter your zip code" name="zip" />
         {formState.message && (
           <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
             {formState.message}
