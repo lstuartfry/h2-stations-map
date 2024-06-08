@@ -13,13 +13,13 @@ export default function AddressForm({
 }: {
   onSuccess: (data: GetAddressGeocodingResponseData) => void;
 }) {
-  const [formState, action] = useFormState(getAddressGeocode, { errors: {} });
+  const [formState, action] = useFormState(getAddressGeocode, {});
 
   useEffect(() => {
     // invoke the success callback once data is successfully returned from the server
-    // if (formState.data) {
-    //   onSuccess(formState.data);
-    // }
+    if (formState.data) {
+      onSuccess(formState.data);
+    }
   }, [formState.data, onSuccess]);
 
   return (
@@ -28,20 +28,20 @@ export default function AddressForm({
         <Legend className="text-xl font-semibold">Enter your address</Legend>
         <div className="flex flex-col gap-4">
           <Input
-            errorMessage={formState.errors.addressNumber?.join(", ")}
+            errorMessage={formState.errors?.addressNumber?.join(", ")}
             label="Street number"
             placeholder="enter your street number"
             name="addressNumber"
             type="number"
           />
           <Input
-            errorMessage={formState.errors.street?.join(", ")}
+            errorMessage={formState.errors?.street?.join(", ")}
             label="Street name"
             placeholder="enter your street name"
             name="street"
           />
           <Input
-            errorMessage={formState.errors.zip?.join(", ")}
+            errorMessage={formState.errors?.zip?.join(", ")}
             label="Zip code"
             placeholder="enter your zip code"
             name="zip"
@@ -54,6 +54,11 @@ export default function AddressForm({
             Submit
           </Button>
         </div>
+        {formState.errors?.message && (
+          <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+            {formState.errors?.message}
+          </div>
+        )}
       </Fieldset>
     </form>
   );
