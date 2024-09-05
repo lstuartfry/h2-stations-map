@@ -23,22 +23,37 @@ const AddressAutofill = dynamic(
 );
 
 import { getAddressGeocode } from "@/actions";
-import { type GetAddressGeocodingResponseData } from "@/actions/types";
 import Input from "@/components/Input";
+
+export type AddressFormResponse = {
+  latitude: number;
+  longitude: number;
+};
 
 export default function AddressForm({
   onSuccess,
 }: {
-  onSuccess: (data: GetAddressGeocodingResponseData) => void;
+  onSuccess: (data: AddressFormResponse) => void;
 }) {
   const [formState, action] = useFormState(getAddressGeocode, {});
 
   useEffect(() => {
     // invoke the success callback once data is successfully returned from the server
     if (formState.data) {
-      onSuccess(formState.data);
+      const { latitude, longitude } =
+        formState.data.features[0].properties.coordinates;
+      onSuccess({
+        latitude,
+        longitude,
+      });
     }
   }, [formState.data, onSuccess]);
+
+  // on autofill selection, immediately invoke the onSuccess callback
+  const handleAutofillRetrieve = (response: any) => {
+    const { coordinates } = response.features[0].geometry;
+    onSuccess({ latitude: coordinates[1], longitude: coordinates[0] });
+  };
 
   return (
     <form action={action}>
@@ -47,6 +62,7 @@ export default function AddressForm({
         <div className="flex flex-col gap-4">
           <AddressAutofill
             accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}
+            onRetrieve={handleAutofillRetrieve}
             // limit returned results to bounding box for California
             // https://docs.mapbox.com/mapbox-search-js/api/core/autofill/#addressautofilloptions
             options={{

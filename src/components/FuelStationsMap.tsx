@@ -28,7 +28,7 @@ import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
 import GithubSVG from "public/github.svg";
-import { type GetAddressGeocodingResponseData } from "@/actions/types";
+import { type AddressFormResponse } from "./AddressForm";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -123,8 +123,8 @@ export default function FuelStationsMap({
   }>();
 
   // callback triggered when a user manually enters their address.
-  const handleAddressSuccess = (data: GetAddressGeocodingResponseData) => {
-    const { latitude, longitude } = data.features[0].properties.coordinates;
+  const handleAddressSuccess = (data: AddressFormResponse) => {
+    const { latitude, longitude } = data;
 
     // Create a geojson point for the user's address.
     const centerPoint = turf.point([longitude, latitude]);

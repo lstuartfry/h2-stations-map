@@ -4,12 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 import EnableGPSButton from "@/components/buttons/EnableGPS";
-import AddressForm from "./AddressForm";
+import AddressForm, { type AddressFormResponse } from "./AddressForm";
 import CloseSVG from "public/close.svg";
 import LoadingSVG from "public/loading.svg";
 import RightArrowSVG from "public/right-arrow.svg";
 import WarningSVG from "public/warning.svg";
-import { type GetAddressGeocodingResponseData } from "@/actions/types";
 
 /**
  * A dialogue displayed to the user when the application is first loaded.
@@ -23,7 +22,7 @@ export default function WelcomeDialog({
   loaded: boolean;
   geolocateError?: boolean;
   onGeolocationEnable: () => void;
-  onAddressSuccess: (data: GetAddressGeocodingResponseData) => void;
+  onAddressSuccess: (data: AddressFormResponse) => void;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [loadingGeolocation, setLoadingGeolocation] = useState<boolean>(false);
