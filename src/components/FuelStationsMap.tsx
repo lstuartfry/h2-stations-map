@@ -20,7 +20,6 @@ import { coordAll } from "@turf/meta";
 import sector from "@turf/sector";
 import { type Feature, type Polygon } from "geojson";
 
-import { createSectorLayer } from "@/layers";
 import { createBoundingBox } from "@/utils";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import ProximitySelect from "@/components/ProximitySelect";
@@ -28,7 +27,8 @@ import { FuelStation } from "@/types";
 import StationMarker from "./StationMarker";
 import StationInfo from "./StationInfo";
 import GithubSVG from "public/github.svg";
-import { type AddressFormResponse } from "./AddressForm";
+import { type AddressCoordinates } from "./AddressForm";
+import useProximitySector from "@/hooks/useProximitySector";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -66,17 +66,9 @@ export default function FuelStationsMap({
     null
   );
 
-  // visibility toggle state for the Sector layer
-  const [isSectorVisibile, setIsSectorVisible] = useState<boolean>(true);
-
-  // toggle to trigger the visibility of the sector layer
-  const onToggleSectorVisibility = () => setIsSectorVisible((s) => !s);
-
-  // Create a geojson Sector-like layer
-  const proximitySectorLayer = useMemo(
-    () => createSectorLayer(proximitySector, isSectorVisibile),
-    [proximitySector, isSectorVisibile]
-  );
+  // Proximity Sector props
+  const { isSectorVisibile, onToggleSectorVisibility, sectorLayer } =
+    useProximitySector(proximitySector);
 
   // Once the Map object has loaded, activate the geolocation controls, and update the bounds of the map to fit the bounding box of the fuel stations.
   const handleLoad = () => {
@@ -122,8 +114,8 @@ export default function FuelStationsMap({
     longitude: number;
   }>();
 
-  // callback triggered when a user manually enters their address.
-  const handleAddressSuccess = (data: AddressFormResponse) => {
+  // callback triggered when a user enters their address either manually or using mapbox address autofill.
+  const handleAddressSuccess = (data: AddressCoordinates) => {
     const { latitude, longitude } = data;
 
     // Create a geojson point for the user's address.
@@ -202,7 +194,7 @@ export default function FuelStationsMap({
         mapStyle="mapbox://styles/mapbox/streets-v9"
         onLoad={handleLoad}
       >
-        <DeckGLOverlay layers={[proximitySectorLayer]} />
+        <DeckGLOverlay layers={[sectorLayer]} />
         <NavigationControl />
         <GeolocateControl
           ref={geoControlRef}

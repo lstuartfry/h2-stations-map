@@ -5,6 +5,9 @@ import { useFormState } from "react-dom";
 import { Button, Fieldset, Legend } from "@headlessui/react";
 import { useEffect } from "react";
 
+import { getAddressGeocode } from "@/actions";
+import Input from "@/components/Input";
+
 // reference: https://stackoverflow.com/questions/72311188/hydration-failed-error-using-recharts-with-nextjs
 const AddressAutofill = dynamic(
   () =>
@@ -22,10 +25,7 @@ const AddressAutofill = dynamic(
   }
 );
 
-import { getAddressGeocode } from "@/actions";
-import Input from "@/components/Input";
-
-export type AddressFormResponse = {
+export type AddressCoordinates = {
   latitude: number;
   longitude: number;
 };
@@ -33,7 +33,7 @@ export type AddressFormResponse = {
 export default function AddressForm({
   onSuccess,
 }: {
-  onSuccess: (data: AddressFormResponse) => void;
+  onSuccess: (data: AddressCoordinates) => void;
 }) {
   const [formState, action] = useFormState(getAddressGeocode, {});
 
