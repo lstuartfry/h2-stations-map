@@ -8,8 +8,8 @@ import { type GetAddressGeocodingResponseData } from "./types";
 interface FormState {
   data?: GetAddressGeocodingResponseData;
   errors?: {
-    addressNumber?: string[];
-    street?: string[];
+    address?: string[];
+    city?: string[];
     zip?: string[];
     message?: string;
   };
@@ -17,10 +17,12 @@ interface FormState {
 
 const createAddressSchema = z
   .object({
-    addressNumber: z.string({
-      invalid_type_error: "must enter a valid street number",
+    address: z.string({
+      required_error: "must enter a street address",
     }),
-    street: z.string().min(3),
+    city: z.string({
+      required_error: "must enter a city",
+    }),
     zip: z
       .string({
         invalid_type_error: "must be a 5-digit number",
@@ -39,8 +41,8 @@ export async function getAddressGeocode(
 ): Promise<FormState> {
   // validate the form values before dispatching the server request
   const validationResult = createAddressSchema.safeParse({
-    addressNumber: formData.get("addressNumber"),
-    street: formData.get("street"),
+    address: formData.get("address"),
+    city: formData.get("city"),
     zip: formData.get("zip"),
   });
 
@@ -50,17 +52,18 @@ export async function getAddressGeocode(
     };
   } else {
     try {
-      const { addressNumber, street, zip } = validationResult.data;
+      const { address, city, zip } = validationResult.data;
       const response = await axios.get(
         "https://api.mapbox.com/search/geocode/v6/forward",
         {
           params: {
             access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
-            address_number: addressNumber,
-            street,
+            address_line1: address,
+            city,
             postCode: zip,
+            state: "CA", // form state is locked to "CA"
             country: "US", // limit results to U.S.
-            limit: "1", // limit the results to the most specific result as determined by the mapbox directions API
+            limit: "1", // limit the results to the most specific result as determined by the mapbox geocoding API
           },
         }
       );

@@ -1,8 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useFormState } from "react-dom";
 import { Button, Fieldset, Legend } from "@headlessui/react";
 import { useEffect } from "react";
+
+// reference: https://stackoverflow.com/questions/72311188/hydration-failed-error-using-recharts-with-nextjs
+const AddressAutofill = dynamic(
+  () =>
+    import("@mapbox/search-js-react").then((mapbox) => mapbox.AddressAutofill),
+  {
+    ssr: false,
+    // use a placeholder input while the mapbox search-js-react AddressAutofill component is dynamically loaded
+    loading: () => (
+      <Input
+        label="Address"
+        placeholder="enter street address"
+        name="address"
+      />
+    ),
+  }
+);
 
 import { getAddressGeocode } from "@/actions";
 import { type GetAddressGeocodingResponseData } from "@/actions/types";
@@ -27,26 +45,46 @@ export default function AddressForm({
       <Fieldset className="flex flex-col gap-4">
         <Legend className="text-xl font-semibold">Enter your address</Legend>
         <div className="flex flex-col gap-4">
+          <AddressAutofill
+            accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}
+            // limit returned results to bounding box for California
+            // https://docs.mapbox.com/mapbox-search-js/api/core/autofill/#addressautofilloptions
+            options={{
+              bbox: [-124.409591, 32.534156, -114.131211, 42.009518],
+            }}
+          >
+            <Input
+              errorMessage={formState.errors?.address?.join(", ")}
+              label="Address"
+              placeholder="enter street address"
+              name="address"
+              autoComplete="address-line-1"
+            />
+          </AddressAutofill>
           <Input
-            errorMessage={formState.errors?.addressNumber?.join(", ")}
-            label="Street number"
-            placeholder="enter your street number"
-            name="addressNumber"
-            type="number"
+            errorMessage={formState.errors?.city?.join(", ")}
+            label="City"
+            placeholder="enter city"
+            name="city"
+            autoComplete="address-level2"
           />
-          <Input
-            errorMessage={formState.errors?.street?.join(", ")}
-            label="Street name"
-            placeholder="enter your street name"
-            name="street"
-          />
-          <Input
-            errorMessage={formState.errors?.zip?.join(", ")}
-            label="Zip code"
-            placeholder="enter your zip code"
-            name="zip"
-            type="number"
-          />
+          <div className="flex gap-4">
+            <Input
+              label="State"
+              placeholder=""
+              name="state"
+              disabled
+              value="CA"
+            />
+            <Input
+              errorMessage={formState.errors?.zip?.join(", ")}
+              label="Zip code"
+              placeholder="enter zip"
+              name="zip"
+              type="number"
+              autoComplete="postal-code"
+            />
+          </div>
           <Button
             className="flex mt-6 justify-around items-center rounded-md bg-gray-200 py-1.5 px-3 text-sm/6 font-semibold text-black data-[hover]:bg-gray-300 data-[active]:scale-95"
             type="submit"
