@@ -29,6 +29,7 @@ import StationInfo from "./StationInfo";
 import GithubSVG from "public/github.svg";
 import { type AddressCoordinates } from "./AddressForm";
 import useProximitySector from "@/hooks/useProximitySector";
+import PrimaryButton from "./buttons/PrimaryButton";
 
 // Build a Deck.gl Overlay component to be rendered as a child of the parent Mapbox component
 const DeckGLOverlay: React.FC<DeckProps> = (props) => {
@@ -50,6 +51,9 @@ export default function FuelStationsMap({
 
   // Store a reference to the mapbox geocontrol api
   const geoControlRef = useRef<mapboxgl.GeolocateControl>(null);
+
+  // State for controlling the visibility of the Welcome dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
 
   // Store a reference to the Sector created based on preferred station proximity to the user's current location.
   const [proximitySector, setProximitySector] = useState<Feature<Polygon>>();
@@ -95,6 +99,9 @@ export default function FuelStationsMap({
     // Create a geojson point for the user's location.
     const centerPoint = turf.point([longitude, latitude]);
     setCenterPoint(centerPoint);
+
+    // finally, close the welcome dialog
+    setIsDialogOpen(false);
   };
 
   const [geolocateError, setGeolocateError] = useState<boolean>();
@@ -121,7 +128,12 @@ export default function FuelStationsMap({
     // Create a geojson point for the user's address.
     const centerPoint = turf.point([longitude, latitude]);
     setCenterPoint(centerPoint);
+
+    // Create a marker for the entered address
     setAddressMarker({ latitude, longitude });
+
+    // finally, close the welcome dialog
+    setIsDialogOpen(false);
   };
 
   // updates the Proximity sector whenever a user's location or desired fuel station proximity option is updated.
@@ -169,19 +181,26 @@ export default function FuelStationsMap({
 
   return (
     <>
-      <WelcomeDialog
-        loaded={!!proximitySector}
-        geolocateError={geolocateError}
-        onGeolocationEnable={handleGeolocationEnable}
-        onAddressSuccess={handleAddressSuccess}
-      />
-      {proximitySector && (
-        <ProximitySelect
-          selectedProximityRadius={selectedProximityRadius}
-          onChange={(value: number) => setSelectedProximityRadius(value)}
-          onToggleSector={onToggleSectorVisibility}
-          checked={isSectorVisibile}
+      {isDialogOpen && (
+        <WelcomeDialog
+          onDialogClose={() => setIsDialogOpen(false)}
+          geolocateError={geolocateError}
+          onGeolocationEnable={handleGeolocationEnable}
+          onAddressSuccess={handleAddressSuccess}
         />
+      )}
+      {proximitySector && (
+        <div className="absolute top-2 right-12 z-20 flex flex-col gap-3">
+          <ProximitySelect
+            selectedProximityRadius={selectedProximityRadius}
+            onChange={(value: number) => setSelectedProximityRadius(value)}
+            onToggleSector={onToggleSectorVisibility}
+            checked={isSectorVisibile}
+          />
+          <PrimaryButton onClick={() => setIsDialogOpen(true)}>
+            Reselect address
+          </PrimaryButton>
+        </div>
       )}
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -215,6 +234,7 @@ export default function FuelStationsMap({
             style={{ zIndex: 20 }}
           />
         )}
+
         {stationPopupInfo && (
           <Popup
             latitude={stationPopupInfo.latitude}

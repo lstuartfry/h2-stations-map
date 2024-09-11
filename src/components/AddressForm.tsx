@@ -63,7 +63,7 @@ export default function AddressForm({
           <AddressAutofill
             accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}
             onRetrieve={handleAutofillRetrieve}
-            // limit returned results to bounding box for California
+            // limit returned results to bounding box for California.
             // https://docs.mapbox.com/mapbox-search-js/api/core/autofill/#addressautofilloptions
             options={{
               bbox: [-124.409591, 32.534156, -114.131211, 42.009518],

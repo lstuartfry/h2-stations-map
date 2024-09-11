@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
-import EnableGPSButton from "@/components/buttons/EnableGPS";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 import AddressForm, { type AddressCoordinates } from "./AddressForm";
 import CloseSVG from "public/close.svg";
 import LoadingSVG from "public/loading.svg";
@@ -14,29 +14,31 @@ import WarningSVG from "public/warning.svg";
  * A dialogue displayed to the user when the application is first loaded.
  */
 export default function WelcomeDialog({
-  loaded,
+  onDialogClose,
   geolocateError,
   onGeolocationEnable,
   onAddressSuccess,
 }: {
-  loaded: boolean;
+  onDialogClose: () => void;
   geolocateError?: boolean;
   onGeolocationEnable: () => void;
   onAddressSuccess: (data: AddressCoordinates) => void;
 }) {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
   const [loadingGeolocation, setLoadingGeolocation] = useState<boolean>(false);
   const [showAddressForm, setShowAddressForm] = useState<boolean>(false);
+
+  // reset the state of the dialog on unmount
+  useEffect(() => {
+    return () => {
+      setLoadingGeolocation(false);
+      setShowAddressForm(false);
+    };
+  }, []);
 
   const onEnable = useCallback(() => {
     setLoadingGeolocation(true);
     onGeolocationEnable();
   }, [onGeolocationEnable]);
-
-  // automatically close the dialog once the geolocation has been enabled
-  useEffect(() => {
-    if (isOpen && loaded) setIsOpen(false);
-  }, [isOpen, loaded]);
 
   const content = useMemo(() => {
     if (showAddressForm)
@@ -63,21 +65,20 @@ export default function WelcomeDialog({
             Try enabling location services for your browser and clicking the
             retry button below:
           </div>
-          <EnableGPSButton onClick={onEnable}>
-            Retry enabling GPS
-          </EnableGPSButton>
+          <PrimaryButton onClick={onEnable}>Retry enabling GPS</PrimaryButton>
           <span className="text-sm italic mt-4">
             (or, simply close this dialog to begin browsing the map)
           </span>
         </div>
       );
-    if (loadingGeolocation)
+    if (loadingGeolocation) {
       return (
         <div className="flex justify-center items-center gap-3">
           <div>Fetching your location</div>
           <LoadingSVG className="animate-spin" />
         </div>
       );
+    }
 
     return (
       <div className="flex flex-col gap-6">
@@ -107,7 +108,7 @@ export default function WelcomeDialog({
           <div className="mt-4 grid grid-cols-2 gap-6">
             <div>
               <div className="flex flex-col gap-3 text-base">
-                <EnableGPSButton onClick={onEnable}>Enable GPS</EnableGPSButton>
+                <PrimaryButton onClick={onEnable}>Enable GPS</PrimaryButton>
               </div>
             </div>
             <div className=" flex flex-col gap-3 text-base">
@@ -132,16 +133,12 @@ export default function WelcomeDialog({
   ]);
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-      className="relative z-50"
-    >
+    <Dialog open onClose={onDialogClose} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-white/90">
         <DialogPanel className="flex flex-col w-[500px] border bg-white p-12 shadow-lg">
           <button
             className="flex w-fit self-end -mt-6 -mr-6"
-            onClick={() => setIsOpen(false)}
+            onClick={onDialogClose}
           >
             <CloseSVG width={20} height={20} />
           </button>

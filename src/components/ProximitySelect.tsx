@@ -16,7 +16,7 @@ export default function ProximitySelect(props: Props) {
   const { selectedProximityRadius, checked, onChange, onToggleSector } = props;
 
   return (
-    <div className="absolute top-2 right-12 z-20 bg-white p-4 rounded-md shadow-md flex">
+    <div className="bg-white p-4 rounded-md shadow-md flex">
       <div>
         <Field>
           <Label className="text-base font-medium text-black">

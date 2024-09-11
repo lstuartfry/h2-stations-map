@@ -1,6 +1,6 @@
 import { Button } from "@headlessui/react";
 
-export default function EnableGPSButton({
+export default function PrimaryButton({
   onClick,
   children,
 }: {
