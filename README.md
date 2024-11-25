@@ -1,6 +1,4 @@
-
 https://github.com/lstuartfry/h2-stations-map/assets/14063740/ac7b6ddd-188c-4ea8-abdb-c863373b74e8
-
 
 ## Overview
 
@@ -16,7 +14,7 @@ https://github.com/lstuartfry/h2-stations-map/assets/14063740/e5edd6b9-301a-4567
 
 ## Technologies Used
 
-This project is built using the [Next.js](https://nextjs.org/) framework, and utilizes the [H2 Refuel API](https://developer.hydrogenplatform.com/docs/h2-refuel-api-v1-0) to fetch data on hydrogen fuel stations. Once those stations are fetched, the browser's Geolocation API is used to pinpoint the location of the user. Finally, using the user's location as a center point, a [Deck.gl GeoJson 'Sector' layer](https://deck.gl/docs/api-reference/layers/geojson-layer) is created with a default radius of 5 miles. The radius of this layer is used to highlight which stations on the map are closest to the user's location.
+This project is built using the [Next.js](https://nextjs.org/) framework, and utilizes the [National Renewable Energy Labratory API](https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/all/) to fetch data on hydrogen fuel stations. Once those stations are fetched, the browser's Geolocation API is used to pinpoint the location of the user. Finally, using the user's location as a center point, a [Deck.gl GeoJson 'Sector' layer](https://deck.gl/docs/api-reference/layers/geojson-layer) is created with a default radius of 5 miles. The radius of this layer is used to highlight which stations on the map are closest to the user's location.
 
 ## Local development
 
