@@ -222,7 +222,10 @@ export default function FuelStationsMap({
           fitBoundsOptions={{ maxZoom: 12 }}
         />
         <div className="absolute bottom-8 right-2">
-          <Link href="https://github.com/lstuartfry/h2-stations-map">
+          <Link
+            aria-label="github link"
+            href="https://github.com/lstuartfry/h2-stations-map"
+          >
             <GithubSVG width={40} height={40} />
           </Link>
         </div>
