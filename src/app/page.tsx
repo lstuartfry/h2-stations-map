@@ -6,5 +6,9 @@ import FuelStationsMap from "@/components/FuelStationsMap";
  */
 export default async function Home() {
   const data = await getFuelStations();
-  return <FuelStationsMap fuelStations={data.fuel_stations} />;
+  return (
+    <div className="h-full">
+      <FuelStationsMap fuelStations={data.fuel_stations} />
+    </div>
+  );
 }
