@@ -113,7 +113,7 @@ export default function WelcomeDialog({
             </div>
             <div className=" flex flex-col gap-3 text-base">
               <Button
-                className="flex justify-around items-center rounded-md bg-gray-200 py-1.5 px-3 text-sm/6 font-semibold text-black data-[hover]:bg-gray-300 data-[active]:scale-95"
+                className="flex whitespace-nowrap justify-around items-center rounded-md bg-gray-200 py-1.5 px-3 text-sm/6 font-semibold text-black data-[hover]:bg-gray-300 data-[active]:scale-95"
                 onClick={() => setShowAddressForm(true)}
               >
                 Enter address
